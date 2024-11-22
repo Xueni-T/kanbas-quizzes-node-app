@@ -30,6 +30,7 @@
   "description": "Node.js HTTP Web server for the Kanbas application",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "express-session": "^1.18.1"
   }
 }
