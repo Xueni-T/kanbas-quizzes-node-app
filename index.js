@@ -11,6 +11,7 @@ import EnrollmentsRoutes from "./Kanbas/Enrollments/routes.js";
 import AssignmentRoutes from './Kanbas/Assignments/routes.js';
 
 const app = express();
+<<<<<<< HEAD
 
 app.use(cors({
   credentials: true,
@@ -20,10 +21,22 @@ app.use(cors({
 app.use(express.json());
 
 const sessionOptions = {
+=======
+
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.NETLIFY_URL || "http://localhost:3000",
+  })
+ );
+
+ const sessionOptions = {
+>>>>>>> a5
   secret: process.env.SESSION_SECRET || "kanbas",
   resave: false,
   saveUninitialized: false,
 };
+
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
