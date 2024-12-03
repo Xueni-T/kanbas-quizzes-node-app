@@ -1,6 +1,5 @@
 import * as dao from "./dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
-
 export default function EnrollmentsRoutes(app) {
   app.delete("/api/enrollments/:courseId/:userId", (req, res) => {
     const { courseId, userId} = req.params;
