@@ -19,7 +19,7 @@ export async function addAnswerToMap(quizId, userId, questionId, newAnswer) {
     answer.answers.set(questionId, newAnswer);
     return answer.save();
   }
-  return model.create({ quiz: quizId, user: userId, attempt: 1, answers: { [questionId]: newAnswer }, finished: false });
+  return model.create({ quiz: quizId, user: userId, attempt: 0, answers: { [questionId]: newAnswer }, finished: false });
 }
 
 export async function addAttempt(quizId, userId) {

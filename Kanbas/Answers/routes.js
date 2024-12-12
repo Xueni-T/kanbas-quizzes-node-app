@@ -25,6 +25,52 @@ export default function AnswerRoutes(app) {
     const status = await answersDao.updateAnswer(quizId, userId, updateAnswer);
     res.send(status);
   });
+  app.put("/quizzes/:qid/updateScore", async (req, res) => {
+    const { qid } = req.params;
+    const { userId, score } = req.body;
+    try {
+      const answer = await Answer.findOne({ quizId: qid, userId });
+
+      if (!answer) {
+        return res.status(404).json({ error: "Answer record not found" });
+      }
+      answer.score = score;
+      await answer.save();
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating quiz score:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  app.post("/quizzes/:qid/calculateScore", async (req, res) => {
+    const { qid } = req.params;
+    const { userId } = req.body;
+
+    try {
+      const quiz = await Quiz.findById(qid);
+      const userAnswers = await Answer.findOne({ quizId: qid, userId });
+
+      if (!quiz || !userAnswers) {
+        return res.status(404).json({ error: "Quiz or answers not found" });
+      }
+
+      let score = 0;
+      for (const question of quiz.questions) {
+        const userAnswer = userAnswers.answers.find(
+          (ans) => ans.questionId.toString() === question._id.toString()
+        );
+        if (userAnswer && userAnswer.updateAnswer === question.correctAnswer) {
+          score += question.points || 0;
+        }
+      }
+
+      res.json({ score });
+    } catch (error) {
+      console.error("Error calculating score:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
   app.put("/api/quizzes/:quizId/user/:userId/answers/finished", async (req, res) => {
     const { quizId, userId } = req.params;
     const status = await answersDao.addAttempt(quizId, userId);
@@ -38,8 +84,8 @@ export default function AnswerRoutes(app) {
   });
   app.get("/api/quizzes/:quizId/user/:userId/answers", async (req, res) => {
     const { quizId, userId } = req.params;
-    const answers = await answersDao.findAnswersForUser(quizId, userId);
-    res.send(answers);
+    const status = await answersDao.findAnswersForUser(quizId, userId);
+    res.send(status);
   });
 
   app.post("/api/quizzes/:quizId/user/:userId/answers", async (req, res) => {
